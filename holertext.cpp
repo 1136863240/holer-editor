@@ -269,7 +269,7 @@ void HolerText::paintEvent(QPaintEvent *) {
         p.drawText(single_width + frame_x, frame_y + fm_auto_height, status_text);
         // 画元素
         int i = 1;
-        for (QString auto_str : this->auto_complete_text_list) {
+        for (const QString &auto_str : qAsConst(this->auto_complete_text_list)) {
             int item_x = frame_x, item_y = frame_y + (fm_auto_height * (i + 1));
             if (i == auto_index + 1) {
                 // 画已选中的元素背景
@@ -457,7 +457,7 @@ void HolerText::setText(QString text) {
     QStringList str_list = text.split("\n");
     QVector<QString> line;
     QList<QColor> line_color;
-    for (QString str : str_list) {
+    for (const QString &str : qAsConst(str_list)) {
         if (str.length() == 0) {
             line.clear();
             line_color.clear();
@@ -546,6 +546,7 @@ void HolerText::keyPressEvent(QKeyEvent *event) {
     int _max_y = max_y + show_y;
     if (max_line > _max_y) {
         max_line = _max_y;
+        Q_UNUSED(max_line);
     }
     QMap<QString, QVariant> res;
     bool is_flush = false;
@@ -925,7 +926,7 @@ QString HolerText::line(int line_number) {
     if (line_number < 0 || line_number >= this->total_text.length()) {
         return l;
     }
-    for (QString str : this->total_text.at(line_number)) {
+    for (const QString &str : qAsConst(this->total_text.at(line_number))) {
         l += str;
     }
     return l;
@@ -1001,7 +1002,7 @@ void HolerText::execAutoComplete(QString current_line) {
         this->auto_complete_length = res.at(3).toInt();
         QList<QVariant> text_list = res.at(4).toList();
         this->auto_complete_text_all.clear();
-        for (QVariant item : text_list) {
+        for (const QVariant &item : qAsConst(text_list)) {
             this->auto_complete_text_all.append(item.toString());
         }
         int all_length = this->auto_complete_text_all.length();
@@ -1018,8 +1019,8 @@ void HolerText::execAutoComplete(QString current_line) {
 QString HolerText::allText() {
     QString text = "";
     QStringList lines;
-    for (QVector<QString> str_vec : this->total_text) {
-        for (QString str : str_vec) {
+    for (const QVector<QString> &str_vec : qAsConst(this->total_text)) {
+        for (const QString &str : qAsConst(str_vec)) {
             text += str;
         }
         lines.append(text);
@@ -1096,10 +1097,10 @@ void HolerText::setCodeColorPlugin(QString plugin_name) {
         QJSValue v = exec.call(param_list);
         QList<QVariant> list1 = v.toVariant().toList();
         this->total_rgb.clear();
-        for (QVariant d : list1) {
+        for (const QVariant &d : qAsConst(list1)) {
             QList<QColor> color_list;
             QList<QVariant> list2 = d.toList();
-            for (QVariant d2 : list2) {
+            for (const QVariant &d2 : qAsConst(list2)) {
                 QColor color;
                 QList<QVariant> list3 = d2.toList();
                 if (list3.length() == 3) {
